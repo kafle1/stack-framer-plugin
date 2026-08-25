@@ -1,54 +1,59 @@
-import { framer, CanvasNode, useIsAllowedTo } from "@framer/plugin"
-import { useState, useEffect } from "react"
+import { framer, useIsAllowedTo } from "@framer/plugin"
+import { useState } from "react"
+import { SECTIONS, type Section } from "./sections"
 import "./App.css"
 
 framer.showUI({
   position: "top right",
-  width: 240,
-  height: 95,
+  width: 260,
+  height: 320,
 })
 
-function useSelection() {
-  const [selection, setSelection] = useState<CanvasNode[]>([])
-
-  useEffect(() => {
-    return framer.subscribeToSelection(setSelection)
-  }, [])
-
-  return selection
-}
-
 export function App() {
-  const selection = useSelection()
-  const isAllowed = useIsAllowedTo("addSVG")
-  const layer = selection.length === 1 ? "layer" : "layers"
+  const isAllowed = useIsAllowedTo("addDetachedComponentLayers")
+  const [busyId, setBusyId] = useState<string | null>(null)
+  const [lastInserted, setLastInserted] = useState<string | null>(null)
 
-  const handleAddSvg = async () => {
-    await framer.addSVG({
-      svg: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"><path fill="#999" d="M20 0v8h-8L4 0ZM4 8h8l8 8h-8v8l-8-8Z"/></svg>`,
-      name: "Logo.svg",
-    })
+  const insert = async (section: Section) => {
+    if (busyId) return // one insert at a time, double clicks would stack layers
+    setBusyId(section.id)
+    try {
+      await framer.addDetachedComponentLayers({ url: section.url })
+      setLastInserted(section.name)
+      framer.notify(`${section.name} added`, { variant: "success" })
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Could not add that section"
+      framer.notify(message, { variant: "error" })
+    } finally {
+      setBusyId(null)
+    }
   }
 
   return (
-    <main>
-      <p>
-        Welcome! Check out the{" "}
-        <a
-          href="https://framer.com/developers/plugins/introduction"
-          target="_blank"
-        >
-          Docs
-        </a>{" "}
-        to start. You have {selection.length} {layer} selected.
+    <main className="sections">
+      <ul className="section-list">
+        {SECTIONS.map(section => (
+          <li key={section.id}>
+            <button
+              className="section-card"
+              onClick={() => insert(section)}
+              disabled={!isAllowed || busyId !== null}
+            >
+              <span className="section-name">{section.name}</span>
+              <span className="section-category">{section.category}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p className="status">
+        {!isAllowed
+          ? "You do not have edit access to this project"
+          : busyId
+            ? "Adding…"
+            : lastInserted
+              ? `Last added: ${lastInserted}`
+              : "Click a section to add it to the canvas"}
       </p>
-      <button
-        className="framer-button-primary"
-        onClick={handleAddSvg}
-        disabled={!isAllowed}
-      >
-        Insert Logo
-      </button>
     </main>
   )
 }
