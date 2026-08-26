@@ -1,5 +1,6 @@
 import { framer, useIsAllowedTo } from "@framer/plugin"
 import { useState } from "react"
+import { addSectionToPage } from "./page"
 import { SECTIONS, type Section } from "./sections"
 import "./App.css"
 
@@ -9,10 +10,10 @@ framer.showUI({
   height: 320,
 })
 
-const IDLE = "Click a section to add it to the canvas"
+const IDLE = "Click a section to add it to the page"
 
 export function App() {
-  const canInsert = useIsAllowedTo("addDetachedComponentLayers")
+  const canInsert = useIsAllowedTo("addDetachedComponentLayers", "setParent", "setAttributes")
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState(IDLE)
 
@@ -20,7 +21,7 @@ export function App() {
     setBusy(true)
     setStatus(`Adding ${section.name}…`)
     try {
-      await framer.addDetachedComponentLayers({ url: section.url })
+      await addSectionToPage(section.url)
       setStatus(`Added ${section.name}`)
       framer.notify(`${section.name} added`, { variant: "success" })
     } catch (error) {

@@ -1,7 +1,7 @@
 # Stack Sections
 
-Step 1 of your brief. A panel with three sections, click one and it lands on the canvas as
-editable layers.
+Step 1 of your brief. A panel with three sections, click one and it lands at the bottom of the
+page as editable layers.
 
 - 30 second demo: [`docs/demo.mp4`](docs/demo.mp4)
 - Screenshot walkthrough: [`docs/walkthrough.pdf`](docs/walkthrough.pdf)
@@ -24,8 +24,12 @@ The panel opens top right and stays there while you work.
 
 ## What it does
 
-Three cards. Click one and the section goes on the canvas through
+Three cards. Click one and the section goes into the page through
 `addDetachedComponentLayers`, so it arrives as normal editable layers, nothing locked.
+
+Sections stack, they don't scatter. The first insert switches the page frame to a vertical
+stack, then every section lands under the previous one, full width. Three clicks build one
+page, not three loose blocks on the canvas.
 
 Every insert confirms three ways: the section on the canvas, a Framer toast, and the status
 line at the bottom of the panel. While an insert is running the cards go disabled, so a fast
@@ -35,7 +39,7 @@ going quiet.
 ## The three sections
 
 `src/sections.ts` holds three objects, each an id, a name and a component URL. They point at
-Framer's own Hero, Gallery and Footer for now, since yours aren't built yet. Swap the three
+Framer's own Hero, Grid and Footer for now, since yours aren't built yet. Swap the three
 `url` fields for yours (Assets, right click the component, Copy URL) and nothing else changes.
 
 `category`, `thumb`, `tier` and `singleton` from your catalogue aren't in here, because step 1
@@ -52,9 +56,8 @@ component, it will fail rather than silently insert something different.
 those copies never pick up changes you make to the source section later. If the library keeps
 growing, that's a real call, not a detail.
 
-**Nothing selected on the canvas**: it still inserts, it just lands beside the frame instead of
-inside the page. Nothing errors. If you want it to land in the page, step 2 has to target the
-frame.
+**Nothing selected on the canvas** used to mean the section landed loose beside the frame.
+It now goes into the page frame regardless of what's selected, so selection doesn't matter.
 
 **No insert limit** that I could hit. A dozen inserts in one session, no throttling, no error.
 
@@ -72,6 +75,7 @@ step 3.
 
 ```
 src/sections.ts   the three sections
-src/App.tsx       the panel, the click, the insert
+src/App.tsx       the panel and the click
+src/page.ts       finds the page frame and stacks the section into it
 framer.json       plugin id, name, icon
 ```
