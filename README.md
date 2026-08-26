@@ -33,12 +33,25 @@ Two things I did anyway because they'd show up in the video: the buttons go disa
 is running so a fast double click can't drop two copies, and a failed insert puts the error in a
 toast instead of just doing nothing.
 
-## Stuff I'd want answered before step 2
+## What I found running it
 
-- Your doc says `framer-plugin`. Setting up a plugin today gives you `@framer/plugin` v4 and the old
-  package looks dead, so I went with v4.
-- Detached vs linked. Detached is editable but never picks up changes you make to your source
-  section later. If the library keeps growing that's worth deciding now, not after.
-- Inserting with nothing selected on the canvas: see the video.
-- Nothing documented about a limit on inserts per session. It'll show up in step 2 if it exists,
-  where a page gets built out of 15 sections.
+- **Detached insert only works for components you drew in Framer.** A code component
+  throws "Failed to load component for detaching. It might not be a visual component."
+  So the plugin tries `addDetachedComponentLayers` first and falls back to
+  `addComponentInstance` if the module isn't detachable. In the video the first card
+  comes in as editable layers, the other two come in as linked instances, because the
+  placeholders are Framer's own code components. With your real sections all three
+  will detach.
+- **Nothing selected on the canvas**: the section still inserts, it just lands beside
+  the frame at a negative X, not inside it. Nothing errors. If you want it to land in
+  the page you'd have to target the frame yourself, worth deciding in step 2.
+- **Package name.** Your doc says `framer-plugin`. The current scaffold installs
+  `@framer/plugin` v4, `framer-plugin` sits at 3.10.3 and looks like the old one. I went
+  with v4.
+- **Insert limit**: none that I hit. I ran a dozen inserts in one session with no
+  throttling or error.
+
+## Placeholders
+
+`src/sections.ts` points at Framer's own public components (Page, Ticker, Embed) since
+your sections aren't built yet. Three URLs to swap, nothing else changes.

@@ -12,7 +12,7 @@ export const SECTIONS: Section[] = [
     id: "hero-split",
     name: "Hero split",
     category: "Hero",
-    url: "https://framer.com/m/framer/Video.js",
+    url: "https://framer.com/m/framer/Page.js",
   },
   {
     id: "feature-grid",
@@ -24,6 +24,6 @@ export const SECTIONS: Section[] = [
     id: "footer-simple",
     name: "Footer simple",
     category: "Footer",
-    url: "https://framer.com/m/framer/Marquee.js",
+    url: "https://framer.com/m/framer/Embed.js",
   },
 ]

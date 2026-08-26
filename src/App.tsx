@@ -18,12 +18,19 @@ export function App() {
     if (busyId) return // one insert at a time, double clicks would stack layers
     setBusyId(section.id)
     try {
+      // detaching only works for components drawn in Framer, a code component throws here
       await framer.addDetachedComponentLayers({ url: section.url })
-      setLastInserted(section.name)
+      setLastInserted(`${section.name} (editable layers)`)
       framer.notify(`${section.name} added`, { variant: "success" })
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Could not add that section"
-      framer.notify(message, { variant: "error" })
+    } catch {
+      try {
+        await framer.addComponentInstance({ url: section.url })
+        setLastInserted(`${section.name} (linked instance)`)
+        framer.notify(`${section.name} added as a linked instance`, { variant: "info" })
+      } catch (error) {
+        const message = error instanceof Error ? error.message : "Could not add that section"
+        framer.notify(message, { variant: "error" })
+      }
     } finally {
       setBusyId(null)
     }
