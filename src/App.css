@@ -18,18 +18,15 @@ main.sections {
 }
 
 .section-card {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
   width: 100%;
   padding: 10px 12px;
   border: none;
   border-radius: 8px;
   background: var(--framer-color-bg-secondary);
   color: var(--framer-color-text);
-  cursor: pointer;
+  font-weight: 600;
   text-align: left;
+  cursor: pointer;
 }
 
 .section-card:hover:not(:disabled) {
@@ -39,14 +36,6 @@ main.sections {
 .section-card:disabled {
   opacity: 0.5;
   cursor: default;
-}
-
-.section-name {
-  font-weight: 600;
-}
-
-.section-category {
-  color: var(--framer-color-text-tertiary);
 }
 
 .status {

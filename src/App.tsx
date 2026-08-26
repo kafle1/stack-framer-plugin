@@ -9,30 +9,26 @@ framer.showUI({
   height: 320,
 })
 
-export function App() {
-  const isAllowed = useIsAllowedTo("addDetachedComponentLayers")
-  const [busyId, setBusyId] = useState<string | null>(null)
-  const [lastInserted, setLastInserted] = useState<string | null>(null)
+const IDLE = "Click a section to add it to the canvas"
 
-  const insert = async (section: Section) => {
-    if (busyId) return // one insert at a time, double clicks would stack layers
-    setBusyId(section.id)
+export function App() {
+  const canInsert = useIsAllowedTo("addDetachedComponentLayers")
+  const [busy, setBusy] = useState(false)
+  const [status, setStatus] = useState(IDLE)
+
+  const add = async (section: Section) => {
+    setBusy(true)
+    setStatus(`Adding ${section.name}…`)
     try {
-      // detaching only works for components drawn in Framer, a code component throws here
       await framer.addDetachedComponentLayers({ url: section.url })
-      setLastInserted(`${section.name} (editable layers)`)
+      setStatus(`Added ${section.name}`)
       framer.notify(`${section.name} added`, { variant: "success" })
-    } catch {
-      try {
-        await framer.addComponentInstance({ url: section.url })
-        setLastInserted(`${section.name} (linked instance)`)
-        framer.notify(`${section.name} added as a linked instance`, { variant: "info" })
-      } catch (error) {
-        const message = error instanceof Error ? error.message : "Could not add that section"
-        framer.notify(message, { variant: "error" })
-      }
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : "unknown error"
+      setStatus(`Could not add ${section.name}`)
+      framer.notify(reason, { variant: "error" })
     } finally {
-      setBusyId(null)
+      setBusy(false)
     }
   }
 
@@ -43,24 +39,15 @@ export function App() {
           <li key={section.id}>
             <button
               className="section-card"
-              onClick={() => insert(section)}
-              disabled={!isAllowed || busyId !== null}
+              onClick={() => add(section)}
+              disabled={!canInsert || busy}
             >
-              <span className="section-name">{section.name}</span>
-              <span className="section-category">{section.category}</span>
+              {section.name}
             </button>
           </li>
         ))}
       </ul>
-      <p className="status">
-        {!isAllowed
-          ? "You do not have edit access to this project"
-          : busyId
-            ? "Adding…"
-            : lastInserted
-              ? `Last added: ${lastInserted}`
-              : "Click a section to add it to the canvas"}
-      </p>
+      <p className="status">{canInsert ? status : "You need edit access to this project"}</p>
     </main>
   )
 }

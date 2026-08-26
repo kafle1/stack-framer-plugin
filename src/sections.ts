@@ -1,29 +1,14 @@
 export interface Section {
   id: string
   name: string
-  category: string
-  /** Framer code component module URL, from Assets -> Code Component -> Copy URL */
+  /** Framer component module URL, from Assets -> right click the component -> Copy URL */
   url: string
 }
 
-// Placeholders so the plugin runs today. Swap these three for Dom's component URLs.
+// Framer's own sections, standing in until yours are built. Detaching only works on
+// components drawn in Framer, so these are design components, not code components.
 export const SECTIONS: Section[] = [
-  {
-    id: "hero-split",
-    name: "Hero split",
-    category: "Hero",
-    url: "https://framer.com/m/framer/Page.js",
-  },
-  {
-    id: "feature-grid",
-    name: "Feature grid",
-    category: "Features",
-    url: "https://framer.com/m/framer/Ticker.js",
-  },
-  {
-    id: "footer-simple",
-    name: "Footer simple",
-    category: "Footer",
-    url: "https://framer.com/m/framer/Embed.js",
-  },
+  { id: "hero", name: "Hero", url: "https://framer.com/m/framer/Hero.js" },
+  { id: "gallery", name: "Gallery", url: "https://framer.com/m/framer/Gallery.js" },
+  { id: "footer", name: "Footer", url: "https://framer.com/m/framer/Footer.js" },
 ]
