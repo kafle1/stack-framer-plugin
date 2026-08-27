@@ -31,6 +31,9 @@ Sections stack, they don't scatter. The first insert switches the page frame to 
 stack, then every section lands under the previous one, full width. Three clicks build one
 page, not three loose blocks on the canvas.
 
+If the project has Tablet and Phone breakpoints, sections go into the primary one, the frame
+you're actually building.
+
 Every insert confirms three ways: the section on the canvas, a Framer toast, and the status
 line at the bottom of the panel. While an insert is running the cards go disabled, so a fast
 double click can't drop two copies, and a failed insert says which section failed instead of

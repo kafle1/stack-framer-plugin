@@ -13,7 +13,7 @@ framer.showUI({
 const IDLE = "Click a section to add it to the page"
 
 export function App() {
-  const canInsert = useIsAllowedTo("addDetachedComponentLayers", "setParent", "setAttributes")
+  const canInsert = useIsAllowedTo("addDetachedComponentLayers", "setParent", "Node.setAttributes")
   const [busy, setBusy] = useState(false)
   const [status, setStatus] = useState(IDLE)
 
